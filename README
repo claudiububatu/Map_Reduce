@@ -1,0 +1,72 @@
+@COPYRIGHT 2021 Bubatu Claudiu-Mihai, 333CA
+-------------------------------------------------------------------------------
+# Parallel and Distributed Algorithms Course
+# Map - Reducer
+
+## Implementation
+
+-------------------------------------------------------------------------------
+        
+                                Main function
+
+    - I saved the command line parameters in the following variables:
+
+    * M is the first argument and it stands for the number of mappers;
+    * R is the second argument and it stands for the number of reducers;
+    * entryFile is the third argument and it stands for the path of the
+    test.txt file;
+
+    - I read the input data from test.txt file;
+    - I initialized every mapper and reducer;
+    - I created M + R threads that were distributed this way:
+    * first M threads were assigned to the mappers which were using the
+    thread function called Mapper;
+    * the rest of them were assigned to the reducers which were using the
+    thread function called Reducer;
+
+-------------------------------------------------------------------------------
+  
+                            binarySearch function
+
+    - It gets the parameters nr and R:
+    * nr is the number to be checked if it is a perfect power;
+    * R represents the number of reducers and in this function
+    it is used so we can know the maximum exponent that needs
+    to be checked;
+
+    - This function returns a matrix; in this matrix we will save all the
+    possibilities of writing nr (the number) as a perfect power;
+
+    - In order to find that matrix, I used a binary search between 1 and
+    sqrt(nr) to find the base; then I checked all the power of the base
+    untill power R + 1; if base ^ power was equal to my number, then I
+    added that number in the result of the function;
+
+-------------------------------------------------------------------------------
+  
+                                Mapper function
+
+    - It is a thread function which has the role to distribute a file to
+    a thread;
+
+    - I used a mutex so I made sure that only one thread has access to
+    a filename;
+    
+    - Every thread must build a matrix with all the perfect powers;
+    binarySearch function is helping each mapper to get the desired result;
+
+    - I used a barrier to make sure that reducer threads don`t start the
+    work until the mapper threads finish their work;
+
+-------------------------------------------------------------------------------
+  
+                                Reducer function
+
+    - I used a barrier to make sure that reducer threads don`t start the
+    work until the mapper threads finish their work;
+
+    - A reducer thread will take a single mapper`s perfect power and will
+    add every such a value to a set (which keeps the elements ordered and
+    eliminates the duplicates);
+
+    - the reducer thread will print the output to a file
